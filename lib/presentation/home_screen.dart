@@ -1,9 +1,10 @@
 import 'dart:developer';
 
-import 'package:build_with_ai_2025/services/ai/geimni_api.dart';
+import 'package:build_with_ai_2025/services/ai/gemini_api.dart';
 import 'package:build_with_ai_2025/services/network/remote_service.dart';
 import 'package:build_with_ai_2025/services/network/upload_image_to_cloudinary.dart';
 import 'package:build_with_ai_2025/widgets/custom_ts.dart';
+import 'package:build_with_ai_2025/widgets/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _promptController = TextEditingController();
   String _response = '';
   bool _isLoading = false;
+  bool _isPosting = false;
   XFile? _selectedImage;
   String? _imageUrl;
 
@@ -26,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _isLoading = true;
     });
     final String text = _promptController.text;
-    final String response = await GeimniApi().generateResponse(text);
+    final String response = await GeminiApi().generateResponse(text);
     setState(() {
       _response = response;
       _isLoading = false;
@@ -118,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () async {
-                                      GeimniApi geimniApi = GeimniApi();
+                                      GeminiApi geimniApi = GeminiApi();
                                       final imageGenerated = await geimniApi
                                           .generateResponseWithImage(
                                             _promptController.text,
@@ -136,9 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ElevatedButton(
                                     onPressed: () {
                                       ImagePicker()
-                                          .pickImage(
-                                            source: ImageSource.gallery,
-                                          )
+                                          .pickImage(source: ImageSource.camera)
                                           .then((pickedFile) async {
                                             if (pickedFile != null) {
                                               setState(() {
@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           });
                                     },
 
-                                    child: const Text('Select from Gallery'),
+                                    child: const Text('Click Image'),
                                   ),
                                 ],
                               )
@@ -207,11 +207,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 20),
 
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_imageUrl != null) {
-                                RemoteService().postToLinkedinAPI(
-                                  text: _response,
-                                  imageUrl: _imageUrl ?? "",
+                                setState(() {
+                                  _isPosting = true;
+                                });
+                                final res = await RemoteService()
+                                    .postToLinkedinAPI(
+                                      text: _response,
+                                      imageUrl: _imageUrl ?? "",
+                                    );
+                                if (res) {
+                                  showToast();
+                                }
+                                Future.delayed(const Duration(seconds: 2)).then(
+                                  (_) {
+                                    setState(() {
+                                      _isPosting = false;
+                                      _imageUrl = null;
+                                      _response = '';
+                                      _promptController.clear();
+                                    });
+                                  },
                                 );
                               } else {
                                 log('Image URL is null');
@@ -249,4 +266,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  void showToast() => Utils.showFunToast(context);
 }

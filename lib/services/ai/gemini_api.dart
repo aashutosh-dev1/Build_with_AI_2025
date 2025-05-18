@@ -5,12 +5,12 @@ import 'package:build_with_ai_2025/services/network/upload_image_to_cloudinary.d
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:flutter/material.dart';
 
-class GeimniApi {
-  static final GeimniApi _instance = GeimniApi._internal();
-  factory GeimniApi() {
+class GeminiApi {
+  static final GeminiApi _instance = GeminiApi._internal();
+  factory GeminiApi() {
     return _instance;
   }
-  GeimniApi._internal();
+  GeminiApi._internal();
 
   // Initialize the Vertex AI service and create a `GenerativeModel` instance
   // Specify a model that supports your use case

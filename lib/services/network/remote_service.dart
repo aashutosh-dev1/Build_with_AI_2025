@@ -10,7 +10,7 @@ class RemoteService {
   }
   RemoteService._internal();
 
-  Future<void> postToLinkedinAPI({
+  Future<bool> postToLinkedinAPI({
     required String text,
     required String imageUrl,
   }) async {
@@ -27,11 +27,14 @@ class RemoteService {
 
       if (response.statusCode == 200) {
         debugPrint('Post request successful');
+        return true;
       } else {
         debugPrint('Post request failed with status: ${response.statusCode}');
+        return false;
       }
     } catch (e) {
       debugPrint('Error making post request: $e');
+      return false;
     }
   }
 }
