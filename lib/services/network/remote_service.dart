@@ -15,9 +15,9 @@ class RemoteService {
     required String imageUrl,
   }) async {
     final url = Uri.parse(
-      "https://hook.eu2.make.com/wwjiuexceroh98thypo754ksz17jd6eg",
+      "Webhook URL",
     );
-    final body = {"text": text, "image_url": imageUrl};
+    final body = {"text": text, "image_url": imageUrl}; // Replace with your actual body structure
     try {
       final response = await http.post(
         url,
