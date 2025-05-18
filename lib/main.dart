@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase with the default options
+  // This is required for Firebase services to work properly
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
