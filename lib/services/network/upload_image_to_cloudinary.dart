@@ -10,11 +10,10 @@ class UploadImageToCloudinary {
     return _instance;
   }
   UploadImageToCloudinary._internal();
+  final String cloudName = 'your cloud name';
+  final String uploadPreset = 'your upload preset';
 
   Future<String> uploadImageToCloudinary(String imagePath) async {
-    final String cloudName = 'dzpq3bzgz';
-    final String uploadPreset = 'upload from flutter';
-
     final Uri uri = Uri.parse(
       'https://api.cloudinary.com/v1_1/$cloudName/image/upload?upload_preset=$uploadPreset',
     );
@@ -37,9 +36,6 @@ class UploadImageToCloudinary {
   }
 
   Future<String?> uploadToCloudinaryBase64(Uint8List imageBytes) async {
-    final String cloudName = 'dzpq3bzgz';
-    final String uploadPreset = 'upload from flutter';
-
     final base64Image = base64Encode(imageBytes);
     final dataUri = 'data:image/png;base64,$base64Image';
 
