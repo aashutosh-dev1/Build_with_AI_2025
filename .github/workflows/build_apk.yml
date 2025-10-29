@@ -3,6 +3,7 @@ name: Build Flutter APK
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,7 +13,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.29.1'
 
       - name: Install Dependencies
         run: flutter pub get
@@ -29,13 +30,13 @@ jobs:
       - name: Notify backend of success
         if: success()
         run: |
-          curl -X POST http://localhost:3000/workflow-status \
-          -H "Content-Type: application/json" \
-          -d '{ "status": "success", "repo": "${ github.repository }", "sha": "${ github.sha }" }'
+          curl -X POST https://git-flow-flutter.onrender.com/workflow-status \
+            -H "Content-Type: application/json" \
+            -d '{"status": "success", "repo": "${{ github.repository }}", "sha": "${{ github.sha }}", "run_id": "${{ github.run_id }}", "artifact_name": "app-release"}'
 
       - name: Notify backend of failure
         if: failure()
         run: |
-          curl -X POST http://localhost:3000/workflow-status \
-          -H "Content-Type: application/json" \
-          -d '{ "status": "failure", "repo": "${ github.repository }", "sha": "${ github.sha }" }'
+          curl -X POST https://git-flow-flutter.onrender.com/workflow-status \
+            -H "Content-Type: application/json" \
+            -d '{"status": "failure", "repo": "${{ github.repository }}", "sha": "${{ github.sha }}", "run_id": "${{ github.run_id }}"}'
